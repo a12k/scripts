@@ -2,7 +2,7 @@
 # to fug/toaster, message required, usage:
 # python toast.py 'secret message' -v 5 -t 36
 # uses std defaults of 1 view, 20 hours
-import mechanize, sys, time, argparse
+import mechanize, sys, argparse
 
 URL = 'https://fugacious.18f.gov/'
 
@@ -39,9 +39,8 @@ if args.views:
 if args.time:
   br.form['message[hours]'] = args.time
 
-# submits, waits, returns secret url
+# submits + prints secret url
 br.submit()
-time.sleep(2)
 toast_url = br.geturl()
 
 print toast_url
