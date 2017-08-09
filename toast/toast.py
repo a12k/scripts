@@ -4,43 +4,49 @@
 # uses std defaults of 1 view, 20 hours
 import mechanize, sys, argparse
 
-URL = 'https://fugacious.18f.gov/'
+def get_and_submit_form():
+  URL = 'https://fugacious.18f.gov/'
 
-# set command line arg flags
-parser = argparse.ArgumentParser()
-parser.add_argument('message')
-parser.add_argument('-v', '--views', help='num of views to expire')
-parser.add_argument('-t', '--time', help='hours to expire')
+  # set command line arg flags
+  parser = argparse.ArgumentParser()
+  parser.add_argument('message')
+  parser.add_argument('-v', '--views', help='num of views to expire')
+  parser.add_argument('-t', '--time', help='hours to expire')
 
-args = parser.parse_args()
+  args = parser.parse_args()
 
-# sets encoding to utf-8
-reload(sys)
-sys.setdefaultencoding('utf8')
+  # sets encoding to utf-8
+  reload(sys)
+  sys.setdefaultencoding('utf8')
 
-# opens mechanize session, ignores robits
-br = mechanize.Browser()
-br.set_handle_robots(False)
-br.open(URL)
+  # opens mechanize session, ignores robits
+  br = mechanize.Browser()
+  br.set_handle_robots(False)
+  br.open(URL)
 
-# selects form on page
-def select_form(form):
-  return form.attrs.get('id', None) == 'new_message'
+  # selects form on page
+  def select_form(form):
+    return form.attrs.get('id', None) == 'new_message'
 
-br.select_form(predicate=select_form)
+  br.select_form(predicate=select_form)
 
-# fills in form with mandatory arg (message) and
-# looks for optional args
-br.form['message[body]'] = args.message
+  # fills in form with mandatory arg (message) and
+  # looks for optional args
+  br.form['message[body]'] = args.message
 
-if args.views:
-  br.form['message[max_views]'] = args.views
+  if args.views:
+    br.form['message[max_views]'] = args.views
 
-if args.time:
-  br.form['message[hours]'] = args.time
+  if args.time:
+    br.form['message[hours]'] = args.time
 
-# submits + prints secret url
-br.submit()
-toast_url = br.geturl()
+  # submits + returns secret url
+  br.submit()
+  return br.geturl()
 
-print toast_url
+def main():
+  toast_url = get_and_submit_form()
+  print toast_url
+
+if __name__ == "__main__":
+  main()  
