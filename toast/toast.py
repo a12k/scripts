@@ -5,6 +5,7 @@
 import mechanize, sys, time, argparse
 
 URL = 'https://fugacious.18f.gov/'
+
 # set command line arg flags
 parser = argparse.ArgumentParser()
 parser.add_argument('message')
